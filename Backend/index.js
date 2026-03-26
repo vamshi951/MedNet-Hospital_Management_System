@@ -40,15 +40,15 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// ✅ FIXED PORT
+//  FIXED PORT
 const PORT = 8000;
 
 app.listen(PORT, async () => {
   try {
     await connection;
-    console.log("✅ Connected to DB");
+    console.log(" Connected to DB");
   } catch (error) {
-    console.log("❌ Unable to connect to DB");
+    console.log(" Unable to connect to DB");
     console.log(error);
   }
 
