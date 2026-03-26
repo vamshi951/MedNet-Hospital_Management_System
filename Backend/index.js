@@ -1,9 +1,10 @@
-require("dotenv").config({ path: __dirname + "/.env" });
+require("dotenv").config({ path: "./.env" });
 
 const express = require("express");
 const cors = require("cors");
 const connection = require("./configs/db");
 
+// Routes
 const adminRouter = require("./routes/Admins.Route");
 const ambulanceRouter = require("./routes/Ambulances.Route");
 const appointmentRouter = require("./routes/Appointments.Route");
@@ -22,15 +23,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Debug (you can remove later)
-console.log("ENV PORT:", process.env.PORT);
-
 // Test route
 app.get("/", (req, res) => {
-  res.send("Homepage");
+  res.send("Hospital Management System Backend is Running");
 });
 
-// Routes
+// Route Middleware
 app.use("/admin", adminRouter);
 app.use("/ambulances", ambulanceRouter);
 app.use("/appointments", appointmentRouter);
@@ -43,17 +41,16 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// ✅ FINAL PORT FIX
-const PORT = 5000;   // 🔥 HARDCODE (FINAL FIX)
+// --- FIX: Define PORT before using it in app.listen ---
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
   try {
     await connection;
-    console.log("Connected to DB");
+    console.log("✅ Connected to MongoDB Atlas");
   } catch (error) {
-    console.log("Unable to connect to DB");
-    console.log(error);
+    console.log("❌ Unable to connect to DB");
+    console.error(error.message);
   }
-
-  console.log("🚀 Server running on http://localhost:" + PORT);
+  console.log(`🚀 Server listening at http://localhost:${PORT}`);
 });
