@@ -40,17 +40,17 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// ✅ HARD FIX (no undefined ever)
-const PORT = 5000;
+// 🔥 FIXED PORT (avoid conflicts)
+const PORT = 8000;
 
 app.listen(PORT, async () => {
   try {
     await connection;
-    console.log("Connected to DB");
+    console.log("✅ Connected to DB");
   } catch (error) {
-    console.log("Unable to connect to DB");
+    console.log("❌ Unable to connect to DB");
     console.log(error);
   }
 
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
