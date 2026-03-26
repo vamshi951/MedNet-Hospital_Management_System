@@ -1,7 +1,13 @@
-require("dotenv").config();
+require("dotenv").config({ path: __dirname + "/../.env" });
 
 const mongoose = require("mongoose");
 
-const connection = mongoose.connect(process.env.MONGO_URI);
+const uri = process.env.MONGO_URI;
+
+if (!uri) {
+  console.log("❌ MONGO_URI is undefined. Check your .env file");
+}
+
+const connection = mongoose.connect(uri);
 
 module.exports = connection;
