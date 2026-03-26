@@ -22,11 +22,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-<<<<<<< HEAD
-// Hardcoded fallback to 5000 if process.env.PORT is missing
-const PORT = process.env.PORT || 8000;
-app.get("/", (req, res) => res.send("Backend working"));
-=======
+
 // Test route
 app.get("/", (req, res) => {
   res.send("Homepage");
@@ -45,9 +41,7 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// 🔥 FIXED PORT (avoid conflicts)
-const PORT = 8000;
->>>>>>> ebd87bc8bda2b5cbcb71370591c8836f1c38b975
+
 
 app.listen(PORT, async () => {
   try {
