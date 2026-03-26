@@ -4,7 +4,7 @@
 Clone the project
 
 ```bash
-  git clone https://github.com/Shivateja9876/MedNet-Hospital_Management_system.git
+  git clone https://github.com/vamshi951/MedNet-Hospital_Management_System.git
 ```
 
 Go to the project directory
@@ -92,6 +92,6 @@ This a a website, where we can control all the management related to a hospital 
 
 ## Developed By
 
-- [@Shiva Teja](https://github.com/Shivateja9876)
+- [@Vamshi Pathlavath](https://github.com/vamshi951)
 
 
