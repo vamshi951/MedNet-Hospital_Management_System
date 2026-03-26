@@ -22,6 +22,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Debug (you can remove later)
+console.log("ENV PORT:", process.env.PORT);
+
 // Test route
 app.get("/", (req, res) => {
   res.send("Homepage");
@@ -41,7 +44,7 @@ app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
 // ✅ FINAL PORT FIX
-const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
+const PORT = Number(process.env.PORT) || 5000;
 
 // Start server
 app.listen(PORT, async () => {
@@ -53,5 +56,5 @@ app.listen(PORT, async () => {
     console.log(error);
   }
 
-  console.log(`Listening at port ${PORT}`);
+  console.log("Server is running on port:", PORT);
 });
