@@ -1,13 +1,16 @@
-require("dotenv").config({ path: "./.env" });
+require("dotenv").config({ path: __dirname + "/../.env" });
+
 const mongoose = require("mongoose");
 
-// Silences the Mongoose 7 DeprecationWarning
-mongoose.set('strictQuery', false);
+const uri = process.env.MONGO_URI;
 
-// Connection logic
-const connection = mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+console.log("DEBUG URI:", uri); // 👈 check
+
+if (!uri) {
+  console.log("❌ MONGO_URI is undefined");
+  process.exit(1);
+}
+
+const connection = mongoose.connect(uri);
 
 module.exports = connection;

@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 // Hardcoded fallback to 5000 if process.env.PORT is missing
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 app.get("/", (req, res) => res.send("Backend working"));
 
 app.listen(PORT, async () => {
