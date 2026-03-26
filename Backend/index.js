@@ -2,7 +2,7 @@ require("dotenv").config();   // ✅ MUST be first
 
 const express = require("express");
 const cors = require("cors");
-
+console.log("PORT VALUE:", process.env.PORT);
 // ✅ Correct import (no destructuring)
 const connection = require("./configs/db");
 
