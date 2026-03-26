@@ -40,10 +40,8 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// ✅ FIXED PORT (no undefined issue)
 const PORT = process.env.PORT || 5000;
 
-// Start server
 app.listen(PORT, async () => {
   try {
     await connection;
