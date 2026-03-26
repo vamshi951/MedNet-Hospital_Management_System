@@ -1,4 +1,4 @@
-require("dotenv").config(); // load env variables
+require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
@@ -40,7 +40,7 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// ✅ FIXED PORT ISSUE
+// ✅ FIXED PORT (no undefined issue)
 const PORT = process.env.PORT || 5000;
 
 // Start server
