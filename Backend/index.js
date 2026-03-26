@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "./.env" });
+require("dotenv").config({ path: __dirname + "/.env" });
 
 const express = require("express");
 const cors = require("cors");
@@ -40,8 +40,10 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-const PORT = process.env.PORT || 5000;
+// ✅ FINAL PORT FIX
+const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 
+// Start server
 app.listen(PORT, async () => {
   try {
     await connection;
