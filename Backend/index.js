@@ -1,7 +1,7 @@
 require("dotenv").config();
+
 const express = require("express");
-const { connection } = require("./configs/db");
-//require("dotenv").config();
+const connection = require("./configs/db");
 const cors = require("cors");
 
 const adminRouter = require("./routes/Admins.Route");
@@ -37,7 +37,7 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-app.listen(process.env.port, async () => {
+app.listen(process.env.PORT, async () => {
   try {
     await connection;
     console.log("Connected to DB");
