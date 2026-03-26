@@ -22,7 +22,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-
 // Test route
 app.get("/", (req, res) => {
   res.send("Homepage");
@@ -41,7 +40,8 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-
+// ✅ FIXED PORT
+const PORT = 8000;
 
 app.listen(PORT, async () => {
   try {
