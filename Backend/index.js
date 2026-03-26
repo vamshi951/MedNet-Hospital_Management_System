@@ -4,7 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const connection = require("./configs/db");
 
-// Routes
+// Import Routers
 const adminRouter = require("./routes/Admins.Route");
 const ambulanceRouter = require("./routes/Ambulances.Route");
 const appointmentRouter = require("./routes/Appointments.Route");
@@ -23,12 +23,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// --- CRITICAL: Define PORT before using it ---
+const PORT = process.env.PORT || 5000;
+
 // Test route
 app.get("/", (req, res) => {
-  res.send("Hospital Management System Backend is Running");
+  res.send("MedNet Hospital Management System Backend is Running");
 });
 
-// Route Middleware
+// Routes
 app.use("/admin", adminRouter);
 app.use("/ambulances", ambulanceRouter);
 app.use("/appointments", appointmentRouter);
@@ -41,13 +44,11 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// --- FIX: Define PORT before using it in app.listen ---
-const PORT = process.env.PORT || 5000;
-
+// Start Server
 app.listen(PORT, async () => {
   try {
     await connection;
-    console.log("✅ Connected to MongoDB Atlas");
+    console.log("✅ Connected to MongoDB Atlas successfully");
   } catch (error) {
     console.log("❌ Unable to connect to DB");
     console.error(error.message);
