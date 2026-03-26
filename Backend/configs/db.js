@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const uri = process.env.MONGO_URI;
 
 if (!uri) {
-  console.log("❌ MONGO_URI missing");
+  console.log(" MONGO_URI missing");
   process.exit(1);
 }
 
