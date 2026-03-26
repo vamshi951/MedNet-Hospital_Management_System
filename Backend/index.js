@@ -44,5 +44,5 @@ app.listen(process.env.port, async () => {
     console.log("Unable to connect to DB");
     console.log(error);
   }
-  console.log(`Listening at port ${process.env.port}`);
+  console.log(`Listening at port ${process.env.PORT}`);
 });
