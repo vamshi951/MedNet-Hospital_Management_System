@@ -1,12 +1,9 @@
-require("dotenv").config();   // ✅ MUST be first
+require("dotenv").config(); // load env variables
 
 const express = require("express");
 const cors = require("cors");
-console.log("PORT VALUE:", process.env.PORT);
-// ✅ Correct import (no destructuring)
 const connection = require("./configs/db");
 
-// Routes
 const adminRouter = require("./routes/Admins.Route");
 const ambulanceRouter = require("./routes/Ambulances.Route");
 const appointmentRouter = require("./routes/Appointments.Route");
@@ -21,7 +18,7 @@ const reportRouter = require("./routes/Reports.Route");
 
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(express.json());
 app.use(cors());
 
@@ -43,8 +40,11 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-// Server start
-app.listen(process.env.PORT, async () => {
+// ✅ FIXED PORT ISSUE
+const PORT = process.env.PORT || 5000;
+
+// Start server
+app.listen(PORT, async () => {
   try {
     await connection;
     console.log("Connected to DB");
@@ -53,5 +53,5 @@ app.listen(process.env.PORT, async () => {
     console.log(error);
   }
 
-  console.log(`Listening at port ${process.env.PORT}`);
+  console.log(`Listening at port ${PORT}`);
 });
