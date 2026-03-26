@@ -1,6 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const { connection } = require("./configs/db");
-require("dotenv").config();
+//require("dotenv").config();
 const cors = require("cors");
 
 const adminRouter = require("./routes/Admins.Route");
