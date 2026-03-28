@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 const connection = require("./configs/db");
 
 const adminRouter = require("./routes/Admins.Route");
@@ -15,6 +16,9 @@ const patientRouter = require("./routes/Patients.Route");
 const paymentRouter = require("./routes/Payments.route");
 const prescriptionRouter = require("./routes/Prescriptions.Route");
 const reportRouter = require("./routes/Reports.Route");
+
+// Fix Mongoose deprecation warning
+mongoose.set('strictQuery', true);
 
 const app = express();
 
@@ -40,15 +44,15 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 
-//  FIXED PORT
-const PORT = 8000;
+// Use PORT from .env
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
   try {
     await connection;
-    console.log(" Connected to DB");
+    console.log("✅ Connected to DB");
   } catch (error) {
-    console.log(" Unable to connect to DB");
+    console.log("❌ Unable to connect to DB");
     console.log(error);
   }
 
