@@ -1,3 +1,4 @@
+cat > /Users/vamshipathlavath/MedNet-Hospital_Management_System/FrontEnd/src/Pages/Patient/PatientLogin.jsx << 'ENDOFFILE'
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -6,17 +7,21 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import "./Patient.css";
 
-const notify = (text) => toast(text);
+const notify = (text, options = {}) => toast(text, options);
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const PatientLogin = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [registeredID, setRegisteredID] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [loginForm, setLoginForm] = useState({ patientID: "", password: "" });
-  const [registerForm, setRegisterForm] = useState({ patientName: "", email: "", password: "", mobile: "", age: "", gender: "", bloodGroup: "", DOB: "", address: "" });
+  const [registerForm, setRegisterForm] = useState({
+    patientName: "", email: "", password: "", mobile: "",
+    age: "", gender: "", bloodGroup: "", DOB: "", address: ""
+  });
 
   const handleLoginChange = (e) => setLoginForm({ ...loginForm, [e.target.name]: e.target.value });
   const handleRegisterChange = (e) => setRegisterForm({ ...registerForm, [e.target.name]: e.target.value });
@@ -26,12 +31,23 @@ const PatientLogin = () => {
     if (!loginForm.patientID || !loginForm.password) return notify("Please fill all fields");
     setLoading(true);
     try {
-      const res = await axios.post(`${BASE_URL}/patients/login`, { ...loginForm, patientID: Number(loginForm.patientID) });
+      const res = await axios.post(`${BASE_URL}/patients/login`, {
+        patientID: Number(loginForm.patientID),
+        password: loginForm.password
+      });
       if (res.data.message === "Login Successful.") {
-        dispatch({ type: "LOGIN_PATIENT_SUCCESS", payload: { message: res.data.message, user: res.data.user, token: res.data.token } });
         localStorage.setItem("token", res.data.token);
-        notify("Login Successful!");
-        navigate("/patient/dashboard");
+        localStorage.setItem("patientUser", JSON.stringify(res.data.user));
+        dispatch({
+          type: "LOGIN_PATIENT_SUCCESS",
+          payload: {
+            message: res.data.message,
+            user: res.data.user,
+            token: res.data.token
+          }
+        });
+        notify("Login Successful! ✅");
+        setTimeout(() => navigate("/patient/dashboard"), 1000);
       } else {
         notify(res.data.message || "Wrong credentials");
       }
@@ -43,13 +59,20 @@ const PatientLogin = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (!registerForm.patientName || !registerForm.email || !registerForm.password) return notify("Please fill all required fields");
+    if (!registerForm.patientName || !registerForm.email || !registerForm.password) {
+      return notify("Please fill all required fields");
+    }
     setLoading(true);
     try {
-      const res = await axios.post(`${BASE_URL}/patients/register`, { ...registerForm, mobile: Number(registerForm.mobile), age: Number(registerForm.age), patientID: Math.floor(Math.random() * 90000) + 10000 });
+      const res = await axios.post(`${BASE_URL}/patients/register`, {
+        ...registerForm,
+        mobile: Number(registerForm.mobile),
+        age: Number(registerForm.age),
+        patientID: Math.floor(Math.random() * 90000) + 10000
+      });
       if (res.data.id) {
-        notify(`Registered! Your Patient ID is: ${res.data.id}`);
-        setTimeout(() => setIsRegister(false), 2000);
+        setRegisteredID(res.data.id);
+        notify(`✅ Registered! Your Patient ID is: ${res.data.id}. Please save this ID!`, { autoClose: false });
       } else {
         notify(res.data.message || "Registration failed");
       }
@@ -61,7 +84,7 @@ const PatientLogin = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="top-center" />
       <div className="patient-main">
         <div className="patient-left">
           <div className="patient-hero-text">
@@ -77,10 +100,20 @@ const PatientLogin = () => {
         <div className="patient-right">
           <div className="patient-card">
             <div className="patient-tabs">
-              <button className={!isRegister ? "active" : ""} onClick={() => setIsRegister(false)}>Login</button>
+              <button className={!isRegister ? "active" : ""} onClick={() => { setIsRegister(false); setRegisteredID(null); }}>Login</button>
               <button className={isRegister ? "active" : ""} onClick={() => setIsRegister(true)}>Register</button>
             </div>
-            {!isRegister ? (
+
+            {registeredID && (
+              <div className="patient-id-box">
+                <p>🎉 Registration Successful!</p>
+                <h2>{registeredID}</h2>
+                <p>This is your <strong>Patient ID</strong>. Save it to login!</p>
+                <button onClick={() => { setRegisteredID(null); setIsRegister(false); }}>Go to Login →</button>
+              </div>
+            )}
+
+            {!registeredID && !isRegister && (
               <>
                 <h2>Patient Login</h2>
                 <form onSubmit={handleLogin}>
@@ -93,7 +126,9 @@ const PatientLogin = () => {
                 <p className="switch-text">Don't have an account? <span onClick={() => setIsRegister(true)}>Register here</span></p>
                 <p className="back-link"><Link to="/">← Back to Staff Login</Link></p>
               </>
-            ) : (
+            )}
+
+            {!registeredID && isRegister && (
               <>
                 <h2>Patient Register</h2>
                 <form onSubmit={handleRegister}>
@@ -123,7 +158,7 @@ const PatientLogin = () => {
                   <input type="date" name="DOB" value={registerForm.DOB} onChange={handleRegisterChange} />
                   <label>Address</label>
                   <input type="text" name="address" placeholder="Address" value={registerForm.address} onChange={handleRegisterChange} />
-                  <button type="submit">{loading ? "Loading..." : "Register"}</button>
+                  <button type="submit">{loading ? "Registering..." : "Register"}</button>
                 </form>
                 <p className="switch-text">Already have an account? <span onClick={() => setIsRegister(false)}>Login here</span></p>
               </>
@@ -136,3 +171,4 @@ const PatientLogin = () => {
 };
 
 export default PatientLogin;
+ENDOFFILE
