@@ -1,4 +1,3 @@
-cat > /Users/vamshipathlavath/MedNet-Hospital_Management_System/FrontEnd/src/Pages/Patient/PatientLogin.jsx << 'ENDOFFILE'
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -171,4 +170,3 @@ const PatientLogin = () => {
 };
 
 export default PatientLogin;
-ENDOFFILE

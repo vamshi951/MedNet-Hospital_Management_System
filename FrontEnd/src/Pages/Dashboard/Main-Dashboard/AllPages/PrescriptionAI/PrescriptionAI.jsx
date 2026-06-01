@@ -47,30 +47,66 @@ const PrescriptionAI = () => {
     try {
       const base64 = await toBase64(file);
       const isImage = fileType.startsWith("image/");
-      const messages = [
-        {
-          role: "user",
-          content: [
-            isImage
-              ? { type: "image", source: { type: "base64", media_type: fileType, data: base64 } }
-              : { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } },
-            {
-              type: "text",
-              text: `You are a medical assistant. Analyze this prescription and provide:\n\n1. **Prescription Summary**: List all medications, dosages, and frequency mentioned.\n2. **Conditions/Diagnosis**: What condition(s) is this prescription treating?\n3. **Health Suggestions**: Provide practical lifestyle and dietary suggestions to help cure or manage the condition.\n4. **Precautions**: Important things the patient should avoid or be careful about.\n5. **Follow-up**: When should the patient follow up with their doctor?\n\nPlease be clear, concise, and easy to understand for a general patient.`
-            }
-          ]
-        }
-      ];
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+
+      let promptText = `You are a medical assistant. Analyze this prescription and provide:
+
+1. **Prescription Summary**: List all medications, dosages, and frequency mentioned.
+2. **Conditions/Diagnosis**: What condition(s) is this prescription treating?
+3. **Health Suggestions**: Provide practical lifestyle and dietary suggestions to help cure or manage the condition.
+4. **Precautions**: Important things the patient should avoid or be careful about.
+5. **Follow-up**: When should the patient follow up with their doctor?
+
+Please be clear, concise, and easy to understand for a general patient.`;
+
+      let messages;
+
+      if (isImage) {
+        messages = [
+          {
+            role: "user",
+            content: [
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:${fileType};base64,${base64}`
+                }
+              },
+              {
+                type: "text",
+                text: promptText
+              }
+            ]
+          }
+        ];
+      } else {
+        messages = [
+          {
+            role: "user",
+            content: `${promptText}\n\nNote: A PDF prescription was uploaded but I cannot read it directly. Please note that PDF analysis requires text extraction. Ask the user to upload an image of the prescription instead for best results.`
+          }
+        ];
+      }
+
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.REACT_APP_GROQ_KEY}`
+        },
+        body: JSON.stringify({
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
+          max_tokens: 1000,
+          messages: messages
+        }),
       });
+
       const data = await response.json();
-      const text = data.content?.find((b) => b.type === "text")?.text;
+      console.log("Groq response:", data);
+      const text = data.choices?.[0]?.message?.content;
       if (text) {
         setResult(text);
       } else {
+        console.error("API Error:", data);
         notify("Could not analyze prescription. Please try again.");
       }
     } catch (err) {
@@ -99,7 +135,7 @@ const PrescriptionAI = () => {
       <Sidebar />
       <div className="AfterSideBar">
         <h1 className="ai-title">AI Prescription Analyzer</h1>
-        <p className="ai-subtitle">Upload a prescription (image or PDF) to get a summary and health suggestions.</p>
+        <p className="ai-subtitle">Upload a prescription image to get a summary and health suggestions.</p>
         <div className="ai-upload-card">
           <div className="ai-upload-area" onClick={() => document.getElementById("fileInput").click()}>
             {preview ? (
@@ -108,7 +144,7 @@ const PrescriptionAI = () => {
               <div className="ai-upload-placeholder">
                 <span className="ai-upload-icon">📄</span>
                 <p>{file ? `✅ ${file.name}` : "Click to upload prescription"}</p>
-                <p className="ai-upload-hint">Supports JPG, PNG, PDF</p>
+                <p className="ai-upload-hint">Supports JPG, PNG (PDF supported but image recommended)</p>
               </div>
             )}
           </div>
