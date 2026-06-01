@@ -17,6 +17,10 @@ import Add_Patient from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/Add_Pa
 import Book_Appointment from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/Book_Appointment";
 import Nurse_Profile from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/Nurse_Profile";
 import FrontPage from "../Pages/Dashboard/Main-Dashboard/GlobalFiles/FrontPage";
+import PrescriptionAI from "../Pages/Dashboard/Main-Dashboard/AllPages/PrescriptionAI/PrescriptionAI";
+import PatientLogin from "../Pages/Patient/PatientLogin";
+import PatientDashboard from "../Pages/Patient/PatientDashboard";
+
 const AllRoutes = () => {
   return (
     <>
@@ -29,16 +33,18 @@ const AllRoutes = () => {
         <Route path="/rooms" element={<Beds_Rooms />} />
         <Route path="/admin" element={<Add_Admin />} />
         <Route path="/addbeds" element={<AddBeds />} />
-        ******************** Doctor Part *************************
+        <Route path="/checkpayment" element={<Check_Payment />} />
         <Route path="/reports" element={<AllReport />} />
         <Route path="/checkappointment" element={<Check_Appointment />} />
         <Route path="/createslip" element={<Discharge_and_Create_Slip />} />
         <Route path="/patientdetails" element={<Patient_Details />} />
         <Route path="/doctorprofile" element={<Doctor_Profile />} />
-        ******************** Nurse Part *************************
         <Route path="/addpatient" element={<Add_Patient />} />
         <Route path="/bookappointment" element={<Book_Appointment />} />
         <Route path="/nurseprofile" element={<Nurse_Profile />} />
+        <Route path="/prescription-ai" element={<PrescriptionAI />} />
+        <Route path="/patient/login" element={<PatientLogin />} />
+        <Route path="/patient/dashboard" element={<PatientDashboard />} />
       </Routes>
     </>
   );
