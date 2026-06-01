@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { Radio } from "antd";
 import banner from "../../../img/banner.png";
@@ -163,21 +164,41 @@ const DLogin = () => {
         <div className="rightside">
           <h1>Login</h1>
           <div>
-            <Radio.Group
-              value={placement}
-              onChange={placementChange}
-              className={"radiogroup"}
-            >
-              <Radio.Button value="Nurse" className={"radiobutton"}>
-                Nurse
-              </Radio.Button>
-              <Radio.Button value="Doctor" className={"radiobutton"}>
-                Doctor
-              </Radio.Button>
-              <Radio.Button value="Admin" className={"radiobutton"}>
-                Admin
-              </Radio.Button>
-            </Radio.Group>
+           <Radio.Group
+  value={placement}
+  onChange={placementChange}
+  className={"radiogroup"}
+>
+  <Radio.Button value="Nurse" className={"radiobutton"}>
+    Nurse
+  </Radio.Button>
+  <Radio.Button value="Doctor" className={"radiobutton"}>
+    Doctor
+  </Radio.Button>
+  <Radio.Button value="Admin" className={"radiobutton"}>
+    Admin
+  </Radio.Button>
+</Radio.Group>
+
+<div style={{ marginTop: "1rem", textAlign: "center" }}>
+  <p style={{ color: "#888", marginBottom: "0.5rem" }}>Are you a patient?</p>
+  <Link
+    to="/patient/login"
+    style={{
+      display: "inline-block",
+      width: "100%",
+      padding: "0.6rem",
+      backgroundColor: "rgba(244, 133, 133, 0.874)",
+      color: "white",
+      borderRadius: "2rem",
+      textDecoration: "none",
+      fontWeight: "bold",
+      fontSize: "1rem"
+    }}
+  >
+    🏥 Patient Login / Register
+  </Link>
+</div>
           </div>
           <div className="Profileimg">
             <img src={admin} alt="profile" />
