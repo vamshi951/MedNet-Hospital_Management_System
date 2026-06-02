@@ -8,6 +8,7 @@ import { BiDetail } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { TbReportMedical } from "react-icons/tb";
 import { MdBedroomChild, MdDashboardCustomize } from "react-icons/md";
+import { MdPeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { ImMenu } from "react-icons/im";
 import { FiLogOut } from "react-icons/fi";
@@ -20,6 +21,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const { data: { user } } = useSelector((state) => state.auth);
   function toggle() { setIsOpen(!isOpen); }
+
   return (
     <div>
       <div style={{ width: isOpen ? "200px" : "70px" }} className="sidebar">
@@ -30,25 +32,38 @@ const Sidebar = () => {
           </div>
         </div>
         <div className="bottomSection">
+
           <Link className="link" activeclassname="active" to="/dashboard">
             <div className="icon"><MdDashboardCustomize className="mainIcon" /></div>
             <div style={{ display: isOpen ? "block" : "none" }} className="link_text">DashBoard</div>
           </Link>
+
+          {/* NURSE */}
           {user?.userType === "nurse" && <Link className="link" activeclassname="active" to="/nurseprofile"><div className="icon"><CgProfile className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Profile</div></Link>}
           {user?.userType === "nurse" && <Link className="link" activeclassname="active" to="/addpatient"><div className="icon"><FaHospitalUser className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Add Patient</div></Link>}
           {user?.userType === "nurse" && <Link className="link" activeclassname="active" to="/bookappointment"><div className="icon"><BsBookmarkPlus className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Appointments</div></Link>}
+
+          {/* ADMIN */}
+          {user?.userType === "admin" && <Link className="link" activeclassname="active" to="/viewall"><div className="icon"><MdPeopleAlt className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">View All</div></Link>}
           {user?.userType === "admin" && <Link className="link" activeclassname="active" to="/addoctor"><div className="icon"><AiOutlineUserAdd className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Add Doctor</div></Link>}
           {user?.userType === "admin" && <Link className="link" activeclassname="active" to="/addnurse"><div className="icon"><GiNurseFemale className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Add Nurse</div></Link>}
           {user?.userType === "admin" && <Link className="link" activeclassname="active" to="/admin"><div className="icon"><RiAdminLine className="mainIcon" style={{ color: "white" }} /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Add Admin</div></Link>}
           {user?.userType === "admin" && <Link className="link" activeclassname="active" to="/addbeds"><div className="icon"><TbBed className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Add Beds</div></Link>}
           {user?.userType === "admin" && <Link className="link" activeclassname="active" to="/addambulance"><div className="icon"><FaAmbulance className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Add AMBU</div></Link>}
+
+          {/* DOCTOR */}
           {user?.userType === "doctor" && <Link className="link" activeclassname="active" to="/doctorprofile"><div className="icon"><SlUserFollow className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Profile</div></Link>}
           {user?.userType === "doctor" && <Link className="link" activeclassname="active" to="/reports"><div className="icon"><TbReportMedical className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Reports</div></Link>}
           {user?.userType === "doctor" && <Link className="link" activeclassname="active" to="/checkappointment"><div className="icon"><BsFillBookmarkCheckFill className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Appointments</div></Link>}
           {user?.userType === "doctor" && <Link className="link" activeclassname="active" to="/createslip"><div className="icon"><BiDetail className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Create Report</div></Link>}
+
+          {/* ALL ROLES */}
           <Link className="link" activeclassname="active" to="/rooms"><div className="icon"><MdBedroomChild className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Beds</div></Link>
           <Link className="link" activeclassname="active" to="/prescription-ai"><div className="icon"><GiMedicinePills className="mainIcon" /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">AI Prescription</div></Link>
+
+          {/* LOGOUT */}
           <Link className="LogOutPath link" onClick={() => dispatch({ type: "AUTH_LOGOUT" })} to="/"><div className="icon"><FiLogOut /></div><div style={{ display: isOpen ? "block" : "none" }} className="link_text">Logout</div></Link>
+
         </div>
       </div>
     </div>
