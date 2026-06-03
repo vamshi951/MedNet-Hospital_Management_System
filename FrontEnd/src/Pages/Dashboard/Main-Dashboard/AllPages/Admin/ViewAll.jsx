@@ -17,6 +17,7 @@ const ViewAll = () => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => { fetchAll(); }, []);
 
@@ -37,6 +38,23 @@ const ViewAll = () => {
     setLoading(false);
   };
 
+  const handleDelete = async (type, id, name) => {
+    setConfirmDelete({ type, id, name });
+  };
+
+  const confirmDeleteAction = async () => {
+    const { type, id } = confirmDelete;
+    try {
+      await axios.delete(`${BASE_URL}/${type}/${id}`);
+      notify(`✅ Deleted successfully!`);
+      setConfirmDelete(null);
+      fetchAll();
+    } catch {
+      notify("Failed to delete. Please try again.");
+      setConfirmDelete(null);
+    }
+  };
+
   if (data?.isAuthticated === false) return <Navigate to={"/"} />;
   if (data?.user.userType !== "admin") return <Navigate to={"/dashboard"} />;
 
@@ -53,14 +71,13 @@ const ViewAll = () => {
 
   const tabStyle = (tab) => ({
     padding: "0.7rem 1.5rem",
-    border: "none",
+    border: "2px solid rgba(244, 133, 133, 0.874)",
     borderRadius: "8px",
     fontWeight: "bold",
     fontSize: "1rem",
     cursor: "pointer",
     background: activeTab === tab ? "rgba(244, 133, 133, 0.874)" : "white",
     color: activeTab === tab ? "white" : "rgba(244, 133, 133, 0.874)",
-    border: "2px solid rgba(244, 133, 133, 0.874)",
     transition: "all 0.2s",
   });
 
@@ -97,9 +114,50 @@ const ViewAll = () => {
     fontSize: "0.85rem",
   };
 
+  const deleteBtnStyle = {
+    background: "#ff6b6b",
+    color: "white",
+    border: "none",
+    padding: "0.4rem 1rem",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    fontSize: "0.85rem",
+  };
+
   return (
     <>
       <ToastContainer />
+
+      {/* Confirm Delete Modal */}
+      {confirmDelete && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+          background: "rgba(0,0,0,0.5)", zIndex: 1000,
+          display: "flex", alignItems: "center", justifyContent: "center"
+        }}>
+          <div style={{
+            background: "white", borderRadius: "12px", padding: "2rem",
+            maxWidth: "400px", width: "90%", textAlign: "center"
+          }}>
+            <h3 style={{ color: "#333", marginBottom: "1rem" }}>⚠️ Confirm Delete</h3>
+            <p style={{ color: "#666", marginBottom: "1.5rem" }}>
+              Are you sure you want to delete <strong>{confirmDelete.name}</strong>? This action cannot be undone.
+            </p>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <button
+                onClick={() => setConfirmDelete(null)}
+                style={{ padding: "0.6rem 1.5rem", borderRadius: "8px", border: "2px solid #ddd", background: "white", cursor: "pointer", fontWeight: "bold" }}
+              >Cancel</button>
+              <button
+                onClick={confirmDeleteAction}
+                style={{ padding: "0.6rem 1.5rem", borderRadius: "8px", border: "none", background: "#ff6b6b", color: "white", cursor: "pointer", fontWeight: "bold" }}
+              >Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container">
         <Sidebar />
         <div className="AfterSideBar">
@@ -113,7 +171,10 @@ const ViewAll = () => {
               { label: "Nurses", count: nurses.length, emoji: "👩‍⚕️" },
               { label: "Patients", count: patients.length, emoji: "🤒" },
             ].map((s, i) => (
-              <div key={i} style={{ background: "white", borderRadius: "12px", padding: "1rem 2rem", boxShadow: "0 2px 10px rgba(0,0,0,0.07)", textAlign: "center", minWidth: "150px" }}>
+              <div key={i} style={{
+                background: "white", borderRadius: "12px", padding: "1rem 2rem",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.07)", textAlign: "center", minWidth: "150px"
+              }}>
                 <div style={{ fontSize: "2rem" }}>{s.emoji}</div>
                 <div style={{ fontSize: "1.8rem", fontWeight: "bold", color: "rgba(244, 133, 133, 0.874)" }}>{s.count}</div>
                 <div style={{ color: "#888" }}>{s.label}</div>
@@ -127,7 +188,11 @@ const ViewAll = () => {
             placeholder="🔍 Search by name, email, ID, department..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ width: "100%", padding: "0.8rem 1rem", borderRadius: "8px", border: "2px solid #f0f0f0", fontSize: "1rem", marginBottom: "1.5rem", boxSizing: "border-box", outline: "none" }}
+            style={{
+              width: "100%", padding: "0.8rem 1rem", borderRadius: "8px",
+              border: "2px solid #f0f0f0", fontSize: "1rem",
+              marginBottom: "1.5rem", boxSizing: "border-box", outline: "none"
+            }}
           />
 
           {/* Tabs */}
@@ -154,11 +219,12 @@ const ViewAll = () => {
                         <th style={thStyle}>Gender</th>
                         <th style={thStyle}>Mobile</th>
                         <th style={thStyle}>Education</th>
+                        <th style={thStyle}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredDoctors.length === 0 ? (
-                        <tr><td colSpan="7" style={{ ...tdStyle, textAlign: "center" }}>No doctors found</td></tr>
+                        <tr><td colSpan="8" style={{ ...tdStyle, textAlign: "center" }}>No doctors found</td></tr>
                       ) : filteredDoctors.map((d, i) => (
                         <tr key={i} style={{ background: i % 2 === 0 ? "white" : "rgba(255,243,243,0.5)" }}>
                           <td style={tdStyle}><span style={badgeStyle}>{d.docID}</span></td>
@@ -168,6 +234,11 @@ const ViewAll = () => {
                           <td style={tdStyle}>{d.gender}</td>
                           <td style={tdStyle}>{d.mobile}</td>
                           <td style={tdStyle}>{d.education}</td>
+                          <td style={tdStyle}>
+                            <button style={deleteBtnStyle} onClick={() => handleDelete("doctors", d._id, d.docName)}>
+                              🗑️ Delete
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -188,11 +259,12 @@ const ViewAll = () => {
                         <th style={thStyle}>Gender</th>
                         <th style={thStyle}>Mobile</th>
                         <th style={thStyle}>Education</th>
+                        <th style={thStyle}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredNurses.length === 0 ? (
-                        <tr><td colSpan="7" style={{ ...tdStyle, textAlign: "center" }}>No nurses found</td></tr>
+                        <tr><td colSpan="8" style={{ ...tdStyle, textAlign: "center" }}>No nurses found</td></tr>
                       ) : filteredNurses.map((n, i) => (
                         <tr key={i} style={{ background: i % 2 === 0 ? "white" : "rgba(255,243,243,0.5)" }}>
                           <td style={tdStyle}><span style={badgeStyle}>{n.nurseID}</span></td>
@@ -202,6 +274,11 @@ const ViewAll = () => {
                           <td style={tdStyle}>{n.gender}</td>
                           <td style={tdStyle}>{n.mobile}</td>
                           <td style={tdStyle}>{n.education}</td>
+                          <td style={tdStyle}>
+                            <button style={deleteBtnStyle} onClick={() => handleDelete("nurses", n._id, n.nurseName)}>
+                              🗑️ Delete
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -223,11 +300,12 @@ const ViewAll = () => {
                         <th style={thStyle}>Blood Group</th>
                         <th style={thStyle}>Mobile</th>
                         <th style={thStyle}>Age</th>
+                        <th style={thStyle}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredPatients.length === 0 ? (
-                        <tr><td colSpan="8" style={{ ...tdStyle, textAlign: "center" }}>No patients found</td></tr>
+                        <tr><td colSpan="9" style={{ ...tdStyle, textAlign: "center" }}>No patients found</td></tr>
                       ) : filteredPatients.map((p, i) => (
                         <tr key={i} style={{ background: i % 2 === 0 ? "white" : "rgba(255,243,243,0.5)" }}>
                           <td style={tdStyle}><span style={badgeStyle}>{p.patientID}</span></td>
@@ -238,6 +316,11 @@ const ViewAll = () => {
                           <td style={tdStyle}>{p.bloodGroup}</td>
                           <td style={tdStyle}>{p.mobile}</td>
                           <td style={tdStyle}>{p.age}</td>
+                          <td style={tdStyle}>
+                            <button style={deleteBtnStyle} onClick={() => handleDelete("patients", p._id, p.patientName)}>
+                              🗑️ Delete
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
