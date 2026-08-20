@@ -1,4 +1,10 @@
 
+# MedNet Hospital Management System
+
+MedNet is a hospital management app for admins, doctors, nurses, and patients. It supports hospital operations like admitting patients, booking beds and ambulances, managing appointments, generating reports, and handling payments.
+
+The frontend is now configured as an installable Progressive Web App (PWA), so after deployment it can be installed from the browser on Android, iOS, Windows, macOS, and Linux.
+
 ## To Run Locally
 
 Clone the project
@@ -10,26 +16,50 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd Hospital-Management-System
+  cd MedNet-Hospital_Management_System
 ```
 
-Install dependencies
+Install backend dependencies
 
 ```bash
+  cd Backend
   npm install
 ```
 
-Start the server
+Create `Backend/.env` from `Backend/.env.example`, then start the backend
 
 ```bash
-  npm run start
+  npm run dev
 ```
 
+Install frontend dependencies in another terminal
 
-# Hospital Management System
+```bash
+  cd FrontEnd
+  npm install
+```
 
-This a a website, where we can control all the management related to a hospital online, like admitting patient, booking bed, booking ambulance, managing payment and more.
+Create `FrontEnd/.env` from `FrontEnd/.env.example`. For local development, use:
 
+```bash
+  REACT_APP_BASE_URL=http://localhost:8000
+```
+
+Start the frontend
+
+```bash
+  npm start
+```
+
+## Install As An App
+
+To run MedNet on any system or mobile device, deploy both parts:
+
+1. Deploy the backend API to a public Node.js host such as Render, Railway, Fly.io, or a VPS.
+2. Use a public MongoDB Atlas database in `Backend/.env`.
+3. Deploy the frontend build to Vercel, Netlify, Firebase Hosting, or any static hosting provider.
+4. Set `REACT_APP_BASE_URL` on the frontend host to the public backend API URL.
+5. Open the deployed frontend URL on a phone or desktop and choose "Install app" or "Add to Home Screen" from the browser menu.
 
 ## Tech Stack
 
@@ -93,5 +123,4 @@ This a a website, where we can control all the management related to a hospital 
 ## Developed By
 
 - [@Vamshi Pathlavath](https://github.com/vamshi951)
-
 

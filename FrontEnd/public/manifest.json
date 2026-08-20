@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "MedNet",
+  "name": "MedNet Hospital Management System",
+  "description": "Installable hospital management app for admins, doctors, nurses, and patients.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +19,12 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait-primary",
+  "theme_color": "#0f766e",
+  "background_color": "#f8fafc",
+  "categories": ["medical", "productivity", "business"]
 }

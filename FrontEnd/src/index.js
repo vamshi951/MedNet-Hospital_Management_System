@@ -12,3 +12,11 @@ root.render(
     </Provider>
   </BrowserRouter>
 );
+
+if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch((error) => {
+      console.error("MedNet service worker registration failed:", error);
+    });
+  });
+}
